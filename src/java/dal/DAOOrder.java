@@ -27,10 +27,9 @@ public class DAOOrder extends DBConnect {
                 + " JOIN accounts A on A.account_id = O.account_id WHERE O.order_id = ?";
         Order order = null;
         DAOOrderItem d = new DAOOrderItem();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setInt(1, orderId);
-            ResultSet rs = st.executeQuery();
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Account acc = new Account(
                         rs.getInt("account_id"),
@@ -51,7 +50,7 @@ public class DAOOrder extends DBConnect {
                         rs.getDate("recieve_date"),
                         d.getOrderItemByOrderId(rs.getInt("order_id")),
                         acc);
-                return order;
+              } 
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -62,9 +61,8 @@ public class DAOOrder extends DBConnect {
      public Vector<Order> getAllOrders() {
      String sql = "select * from orders O";
         Vector<Order> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+            try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Order order = new Order(
                         rs.getInt("order_id"),
@@ -75,6 +73,7 @@ public class DAOOrder extends DBConnect {
                         );
                 list.add(order);
             }
+           }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -88,9 +87,8 @@ public class DAOOrder extends DBConnect {
         Vector<Order> list = new Vector<>();
         Vector<OrderItem> listItem = new Vector<>();
         DAOOrderItem d = new DAOOrderItem();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Account acc = new Account(
                         rs.getInt("account_id"),
@@ -113,6 +111,7 @@ public class DAOOrder extends DBConnect {
                         acc);
                 list.add(order);
             }
+          } 
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -125,10 +124,9 @@ public class DAOOrder extends DBConnect {
         Vector<Order> list = new Vector<>();
         Vector<OrderItem> listItem = new Vector<>();
         DAOOrderItem d = new DAOOrderItem();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setString(1, status);
-            ResultSet rs = st.executeQuery();
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Account acc = new Account(
                         rs.getInt("account_id"),
@@ -151,6 +149,7 @@ public class DAOOrder extends DBConnect {
                         acc);
                 list.add(order);
             }
+          }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -162,8 +161,7 @@ public class DAOOrder extends DBConnect {
                 + " JOIN accounts A on A.account_id = O.account_id WHERE A.account_id = ? order by order_date desc";
         Vector<Order> list = new Vector<>();
         DAOOrderItem d = new DAOOrderItem();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+       try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setInt(1, accId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -205,48 +203,47 @@ public class DAOOrder extends DBConnect {
         String sql;
         boolean isDone = false;
         int n = 0;
-        if(status.equals("done")) {
+        if (status.equals("done")) {
             isDone = true;
-             sql = "UPDATE [dbo].[orders]\n"
-                + "   SET [status] = ?,"
-                + "       [recieve_date] = ?"
-                + " WHERE [order_id] = ?";
+            sql = "UPDATE [dbo].[orders]\n"
+                    + "   SET [status] = ?,"
+                    + "       [recieve_date] = ?"
+                    + " WHERE [order_id] = ?";
         } else {
-             sql = "UPDATE [dbo].[orders]\n"
-                + "   SET [status] = ?"
-                + " WHERE [order_id] = ?";
+            sql = "UPDATE [dbo].[orders]\n"
+                    + "   SET [status] = ?"
+                    + " WHERE [order_id] = ?";
         }
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try(PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, status);
-            //if done will set recieve_date
-            if(isDone) {
-             st.setTimestamp(2, Timestamp.valueOf(getFormatDate()));
-             st.setInt(3, orderId);
+            if (isDone) {
+                st.setTimestamp(2, Timestamp.valueOf(getFormatDate()));
+                st.setInt(3, orderId);
             } else {
-             st.setInt(2, orderId);
+                st.setInt(2, orderId);
             }
             n = st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }
+
         return n > 0;
     }
-    
+
+
     //checkount
     public void checkcount(Account acc, Vector<Product> listItem) {
      LocalDateTime myDateObj = LocalDateTime.now();  
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         String formattedDate = myDateObj.format(myFormatObj); 
         int newOrderId = getAllOrders().get(getAllOrders().size() - 1).getOrder_id() + 1;
-        try {
-            String sql1 = "INSERT INTO [dbo].[orders]\n"
+         String sql1 = "INSERT INTO [dbo].[orders]\n"
                     + "           ([order_id]\n"
                     + "           ,[account_id]\n"
                     + "           ,[order_date]\n"
                     + "           ,[status])\n"
                     + "     VALUES(?, ?, ?, ?)\n";
-            PreparedStatement st = connection.prepareStatement(sql1);
+       try(PreparedStatement st = connection.prepareStatement(sql1)) {
             st.setInt(1, newOrderId);
             st.setInt(2, acc.getAccount_id());
             st.setTimestamp(3, Timestamp.valueOf(formattedDate));

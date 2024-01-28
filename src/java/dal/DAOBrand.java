@@ -20,9 +20,8 @@ public class DAOBrand extends DBConnect {
     public Vector<Brand> getAllBrand() {
      Vector<Brand> list = new Vector<>();
      String sql = "Select * from brands";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+         try(PreparedStatement st = connection.prepareStatement(sql)) {
+            try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Brand brand = new Brand(
                         rs.getInt("brand_id"),
@@ -32,6 +31,7 @@ public class DAOBrand extends DBConnect {
                         rs.getString("address")
                 );
                 list.add(brand);
+             }
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -42,8 +42,7 @@ public class DAOBrand extends DBConnect {
     public void deleteBrand() {
         String sql = "DELETE FROM [dbo].[brands]\n"
                 + "      WHERE brands_id = ?\n";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+         try(PreparedStatement st = connection.prepareStatement(sql)) {
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
@@ -58,8 +57,7 @@ public class DAOBrand extends DBConnect {
                 + "      ,[address] = ?\n"
                 + " WHERE [brand_id] = ?";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try(PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, brand.getBrand_name());
             st.setString(2, brand.getBrand_phone());
             st.setString(3, brand.getBrand_email());

@@ -21,9 +21,8 @@ public class DAOCategory extends DBConnect {
     public Vector<Category> getAllCategory() {
      Vector<Category> list = new Vector<>();
      String sql = "Select * from categorys";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+       try (PreparedStatement st = connection.prepareStatement(sql)){
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Category category = new Category(
                         rs.getInt("category_id"),
@@ -31,6 +30,7 @@ public class DAOCategory extends DBConnect {
                 );
                 list.add(category);
             }
+         }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -40,8 +40,7 @@ public class DAOCategory extends DBConnect {
     public void deleteCategory() {
         String sql = "DELETE FROM [dbo].[categorys]\n"
                 + "      WHERE category_id = ?\n";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
@@ -53,8 +52,7 @@ public class DAOCategory extends DBConnect {
                 + "   SET [category_name] = ?\n"
                 + " WHERE [category_id] = ?";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setString(1, cat.getCategory_name());
             st.setInt(2, cat.getCategory_id());
             n = st.executeUpdate();

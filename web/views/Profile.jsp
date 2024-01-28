@@ -5,14 +5,14 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.text.Normalizer" %>
+<%@page import="java.util.regex.Pattern" %>
+<%@page import="DAL.*" %>
+<%@page import="Models.*" %>
+<%@page import="java.util.*" %>
+<!DOCTYPE html>
 <html lang="en">
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
-    <%@page import="java.text.Normalizer" %>
-    <%@page import="java.util.regex.Pattern" %>
-    <%@page import="DAL.*" %>
-    <%@page import="Models.*" %>
-    <%@page import="java.util.*" %>
-    <head>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin</title>

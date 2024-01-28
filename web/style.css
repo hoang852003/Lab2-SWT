@@ -332,7 +332,7 @@ input {
     right: 0;
     top: 0;
     font-size: 1.2rem;
-    font-family: "Font Awesome 5 Free";
+    font-family: "Font Awesome 5 Free", sans-serif;;
     font-weight: 900;
     content: "\f107";
 }
@@ -761,7 +761,6 @@ input {
     height: 20rem;
     justify-content: space-between;
     padding: 3rem;
-    display: flex;
     border-radius: 2.5rem;
 }
 

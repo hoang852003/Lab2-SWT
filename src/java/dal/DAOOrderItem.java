@@ -25,10 +25,9 @@ public class DAOOrderItem extends DBConnect {
                 + "JOIN Products P ON P.product_id = O.product_id\n"
                 + "WHERE O.order_id = ?";
         Vector<OrderItem> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setInt(1, OrderId);
-            ResultSet rs = st.executeQuery();
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Product Pro = new Product(
                         rs.getInt("product_id"),
@@ -45,6 +44,7 @@ public class DAOOrderItem extends DBConnect {
                 );
                 list.add(OI);
             }
+         }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -55,9 +55,8 @@ public class DAOOrderItem extends DBConnect {
         String sql = "SELECT * FROM Order_items O\n"
                 + "JOIN Products P ON P.product_id = O.product_id";
         Vector<OrderItem> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+          try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Product Pro = new Product(
                         rs.getInt("product_id"),
@@ -75,6 +74,7 @@ public class DAOOrderItem extends DBConnect {
                 );
                 list.add(OI);
             }
+          }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -84,10 +84,9 @@ public class DAOOrderItem extends DBConnect {
     public Vector<OrderItem> getOrderItemByOrderId(int OrderId) {
         String sql = "Select * from order_items where order_id = ?";
         Vector<OrderItem> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setInt(1, OrderId);
-            ResultSet rs = st.executeQuery();
+          try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 OrderItem OI = new OrderItem(
                         rs.getInt("item_id"),
@@ -99,6 +98,7 @@ public class DAOOrderItem extends DBConnect {
                 );
                 list.add(OI);
             }
+          }
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -108,9 +108,8 @@ public class DAOOrderItem extends DBConnect {
     public Vector<OrderItem> getAllOrderItem() {
         String sql = "SELECT * FROM [order_items]";
         Vector<OrderItem> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+        try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 OrderItem OI = new OrderItem(
                         rs.getInt("item_id"),
@@ -122,6 +121,7 @@ public class DAOOrderItem extends DBConnect {
                 );
                 list.add(OI);
             }
+        }
         } catch (SQLException e) {
             System.out.println(e);
         }

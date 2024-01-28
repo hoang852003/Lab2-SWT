@@ -17,40 +17,43 @@ import java.util.Vector;
  */
 public class DAOAccount extends DBConnect {
     //hien thi ban hang
-    public Vector<Account> getAllAccount() {
-        String sql = "SELECT * FROM accounts WHERE 1=1";
-        Vector<Account> list = new Vector<>();
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                Account cus = new Account(
-                        rs.getInt("account_id"), 
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("account_image"),
-                        rs.getString("address"),
-                        rs.getBoolean("is_admin"),
-                        rs.getBoolean("active")
-                );
-                list.add(cus);
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
+  public Vector<Account> getAllAccount() {
+    String sql = "SELECT * FROM accounts WHERE 1=1";
+    Vector<Account> list = new Vector<>();
+
+    try (PreparedStatement st = connection.prepareStatement(sql);
+         ResultSet rs = st.executeQuery()) {
+
+        while (rs.next()) {
+            Account cus = new Account(
+                    rs.getInt("account_id"), 
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("phone"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("account_image"),
+                    rs.getString("address"),
+                    rs.getBoolean("is_admin"),
+                    rs.getBoolean("active")
+            );
+            list.add(cus);
         }
-        return list;
+
+    } catch (SQLException e) {
+        System.out.println(e);
     }
+
+    return list;
+}
+
     
     public Account getAccountById(int id) {
         String sql = "SELECT * FROM accounts WHERE account_id = ?";
         Account cus = null;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
+           try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 cus = new Account(
                         rs.getInt("account_id"), 
@@ -64,7 +67,7 @@ public class DAOAccount extends DBConnect {
                         rs.getBoolean("is_admin"),
                         rs.getBoolean("active")
                 );
-                return cus;
+              }
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -75,10 +78,9 @@ public class DAOAccount extends DBConnect {
     public Account getAccountByEmail(String email) {
         String sql = "SELECT * FROM accounts WHERE email = ?";
         Account cus = null;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, email);
-            ResultSet rs = st.executeQuery();
+            try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 cus = new Account(
                         rs.getInt("account_id"), 
@@ -92,7 +94,7 @@ public class DAOAccount extends DBConnect {
                         rs.getBoolean("is_admin"),
                         rs.getBoolean("active")
                 );
-                return cus;
+             }
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -102,9 +104,8 @@ public class DAOAccount extends DBConnect {
     public Account validateCustomer(String email, String password) {
         String sql = "SELECT * FROM accounts where email = '"+email+"' and password = "+password;
         Account acc =  null;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try(PreparedStatement st = connection.prepareStatement(sql)) {
+            try(ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 acc = new Account(
                         rs.getInt("account_id"), 
@@ -118,7 +119,7 @@ public class DAOAccount extends DBConnect {
                         rs.getBoolean("is_admin"),
                         rs.getBoolean("active")
                 );
-                return acc;
+              }
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -135,8 +136,7 @@ public class DAOAccount extends DBConnect {
                 + " SET [password] = ?\n"
                 + " WHERE [account_id] = ?";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setString(1, newPassword);
             st.setInt(2, accountId);
             n = st.executeUpdate();
@@ -151,8 +151,7 @@ public class DAOAccount extends DBConnect {
                 + " SET [account_image] = ?\n"
                 + " WHERE [account_id] = ?";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setString(1, newImg);
             st.setInt(2, accountId);
             n = st.executeUpdate();
@@ -172,8 +171,7 @@ public class DAOAccount extends DBConnect {
                 + "      ,[address] = ?\n"
                 + " WHERE [account_id] = ?";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setString(1, email);
             st.setString(2, first_name);
             st.setString(3, last_name);
@@ -201,8 +199,7 @@ public class DAOAccount extends DBConnect {
                 + "     VALUES\n"
                 + "           (?, ?, ?, ?, ?, ?, 0, 0)\n";
         int n = 0;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
             st.setInt(1, acc.getAccount_id());
             st.setString(2, acc.getEmail());
             st.setString(3, acc.getFirst_name());
@@ -215,7 +212,4 @@ public class DAOAccount extends DBConnect {
         }
         return n > 0;
     }
-    
-    
-    
 }
