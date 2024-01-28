@@ -21,9 +21,8 @@ public class DAOAccount extends DBConnect {
     String sql = "SELECT * FROM accounts WHERE 1=1";
     Vector<Account> list = new Vector<>();
 
-    try (PreparedStatement st = connection.prepareStatement(sql);
-         ResultSet rs = st.executeQuery()) {
-
+    try (PreparedStatement st = connection.prepareStatement(sql)){
+        try(ResultSet rs = st.executeQuery()) {
         while (rs.next()) {
             Account cus = new Account(
                     rs.getInt("account_id"), 
@@ -38,6 +37,7 @@ public class DAOAccount extends DBConnect {
                     rs.getBoolean("active")
             );
             list.add(cus);
+        }
         }
 
     } catch (SQLException e) {
