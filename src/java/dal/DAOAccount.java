@@ -37,7 +37,7 @@ public class DAOAccount extends DBConnect {
                     rs.getBoolean("active")
             );
             list.add(cus);
-        }
+         }
         }
 
     } catch (SQLException e) {
